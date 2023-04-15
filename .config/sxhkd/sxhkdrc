@@ -1,11 +1,4 @@
 #
-# wm independent hotkeys
-#
-
-# Open Rofi in Window Mode
-super + w
-	rofi -show window -theme ~/.config/rofi/launchers/type-4/style-4.rasi
-
 # Open Rofi in Run Mode
 super + d
 	rofi -show drun -theme ~/.config/rofi/launchers/type-4/style-4.rasi
