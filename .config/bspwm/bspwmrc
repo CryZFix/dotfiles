@@ -2,7 +2,34 @@
 
 pgrep -x sxhkd > /dev/null || sxhkd &
 
-bspc monitor -d 1 2 3 4 5 6 7 8 9 10
+
+# Monitor settings
+if [[ $HOSTNAME == "reichstag" ]]; then # Preset for work PC
+  xrandr --newmode "1440x900_60.00"  106.50  1440 1528 1672 1904  900 903 909 934 -hsync +vsync
+  xrandr --output $(xrandr|grep DVI-I|awk ' {print $1' }) --auto --primary
+  xrandr --addmode $(xrandr|grep VGA|awk ' {print $1} ') 1440x900_60.00
+  xrandr --output $(xrandr|grep VGA|awk ' {print $1} ') --mode 1440x900_60.00 --left-of $(xrandr|grep DVI-I|awk ' {print $1} ')
+  bspc monitor $(xrandr|grep VGA|awk ' {print $1} ') -d 1
+  bspc monitor $(xrandr|grep DVI-I|awk ' {print $1} ') -d 2 3 4 5 6 7 8 9 10
+
+  bspc rule -a org.remmina.Remmina desktop='^1'
+  bspc rule -a Google-chrome desktop='^2'
+  bspc rule -a Alacritty desktop='^10' follow=on
+  bspc rule -a TelegramDesktop desktop='^9' follow=on
+  bspc rule -a Spotify desktop='^8' follow=on
+elif [[ $HOSTNAME == "laptop" ]]; then # Preset for home Laptop
+  bspc monitor $(xrandr|grep LVDS|awk ' {print $1} ') -d 1 2 3 4 5 6 7 8 9 10
+  bspc rule -a Google-chrome desktop='^2'
+  bspc rule -a Alacritty desktop='^10' follow=on
+  bspc rule -a TelegramDesktop desktop='^9' follow=on
+  bspc rule -a Spotify desktop='^8' follow=on
+fi
+
+if ! pgrep -x "picom" > /dev/null
+then
+    # Waiting at 5 seconds and restart BSPWM for fix polybar position
+    sleep 0.5; xdotool key Super+Alt+R
+fi
 
 bspc config border_width         2
 bspc config window_gap           8
@@ -11,19 +38,9 @@ bspc config split_ratio          0.52
 bspc config borderless_monocle   true
 bspc config gapless_monocle      true
 
-bspc rule -a Gimp desktop='^8' state=floating follow=on
-bspc rule -a Google-chrome desktop='^2'
-bspc rule -a mplayer2 state=floating
-bspc rule -a Kupfer.py focus=on
-bspc rule -a Screenkey manage=off
-bspc rule -a Alacritty desktop='^1' follow=on
-bspc rule -a TelegramDesktop desktop='^10' follow=on
-bspc rule -a Spotify desktop='^9' follow=on
-
-exec xsetroot -cursor_name left_ptr &
-exec sxhkd -c $HOME/.config/bspwm/sxhkd/sxhkdrc &
-exec $HOME/.config/polybar/launch.sh &
-exec nitrogen --restore &
-exec $HOME/.local/bin/picom -b --animations --animation-for-open-window zoom --animation-stiffness 750 --animation-window-mass 0.5 &
-exec setxkbmap -model pc104 -layout us,ru -option grp:alt_shift_toggle &
-
+xsetroot -cursor_name left_ptr &
+sxhkd -c $HOME/.config/sxhkd/sxhkdrc &
+$HOME/.config/polybar/launch.sh &
+picom -b --animations --animation-for-open-window slide-up --animation-stiffness 850 --animation-window-mass 0.5 &
+setxkbmap -model pc104 -layout us,ru -option grp:alt_shift_toggle &
+feh --bg-scale --no-fehbg "$HOME/.config/wallpaper/$(ls $HOME/.config/wallpaper | shuf -n 1)"
