@@ -27,10 +27,10 @@ alias ll='ls -la'
 alias l='ls'
 alias l.="ls -A | egrep '^\.'"
 alias vim='nvim'
+alias yay='yay --removemake'
 alias mount='sudo mount -o users,uid=1000,gid=1000'
 alias mpv3='mpv --no-video --volume=20 '
 alias update='sudo reflector --verbose -l 5 -p https --sort rate --save /etc/pacman.d/mirrorlist && pikaur -Syyu --noconfirm && sudo pacman -Qtdq | sudo pacman -Rns - --noconfirm && sudo rm -dfr ~/.cache && sudo pacman -Sc --noconfirm'
-alias reboot='killall remmina;reboot'
 
 export PATH="$HOME/.local/bin":$PATH
 

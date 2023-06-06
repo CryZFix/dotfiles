@@ -5,7 +5,7 @@ super + d
 
 # terminal emulator
 super + Return
-	alacritty
+	kitty
 
 # program launcher
 super + r
